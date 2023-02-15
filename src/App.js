@@ -1,23 +1,24 @@
-import logo from './logo.svg';
-import './App.css';
+import { Routes, Route } from "react-router-dom";
+import Login from "./Pages/login";
+import Dashboard from "./Pages/dashboard";
+import PageDetails from "./Pages/pageDetails";
+import PrivateRoute from "./Component/PrivateRoute";
 
 function App() {
+  const tokens = localStorage.getItem("access_token");
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Routes>
+        <Route exact path="*" element={!tokens ? <Login /> : <Dashboard />} />
+        <Route path="/" element={<Login />} />
+        <Route element={<PrivateRoute />}>
+          <Route path="/pages" exact element={<Dashboard />}>
+            <Route path="*" element={<Dashboard />} />
+          </Route>
+          <Route path="/pages/:id" element={<PageDetails />} />
+        </Route>
+      </Routes>
     </div>
   );
 }
